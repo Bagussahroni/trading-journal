@@ -14,10 +14,6 @@ body {
     padding: 20px;
 }
 
-.sidebar h2 {
-    margin-bottom: 20px;
-}
-
 .sidebar p {
     margin: 10px 0;
     cursor: pointer;
@@ -34,14 +30,12 @@ body {
     padding: 20px;
 }
 
-/* TOPBAR */
 .topbar {
     background: #0f172a;
     padding: 15px;
     border-radius: 10px;
 }
 
-/* CARD */
 .card {
     background: #111827;
     padding: 15px;
@@ -49,7 +43,6 @@ body {
     margin-top: 20px;
 }
 
-/* INPUT */
 .card input, select {
     margin: 5px;
     padding: 8px;
