@@ -14,12 +14,14 @@ function saveData() {
 function tambahTrade() {
     let tanggal = document.getElementById("tanggal").value;
     let pair = document.getElementById("pair").value;
+    let price = parseFloat(document.getElementById("price").value);
     let type = document.getElementById("type").value;
     let lot = parseFloat(document.getElementById("lot").value);
     let profit = parseFloat(document.getElementById("profit").value);
+
     balance = parseFloat(document.getElementById("balance").value) || 0;
 
-    if (!tanggal || !pair || isNaN(lot) || isNaN(profit)) {
+    if (!tanggal || !pair || isNaN(price) || isNaN(lot) || isNaN(profit)) {
         alert("Lengkapi data!");
         return;
     }
@@ -27,6 +29,7 @@ function tambahTrade() {
     trades.push({
         tanggal,
         pair,
+        price,
         type,
         lot,
         profit,
@@ -44,12 +47,11 @@ function hapus(i) {
     render();
 }
 
-// RENDER (OPTIMIZED ⚡)
+// RENDER (OPTIMIZED)
 function render() {
     let table = document.getElementById("tableData");
+    let html = "";
 
-    let html = ""; // 🔥 lebih cepat dari innerHTML +=
-    
     let totalProfit = 0;
     let win = 0;
     let loss = 0;
@@ -76,6 +78,7 @@ function render() {
             <tr>
                 <td>${t.tanggal}</td>
                 <td>${t.pair}</td>
+                <td>${t.price}</td>
                 <td>${t.type.toUpperCase()}</td>
                 <td>${t.lot}</td>
                 <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit}</td>
@@ -101,7 +104,7 @@ function render() {
     renderChart();
 }
 
-// CHART (FAST UPDATE ⚡ NO DESTROY)
+// CHART (FAST + NO RESET)
 function renderChart() {
     let labels = [];
     let data = [];
@@ -132,7 +135,7 @@ function renderChart() {
     } else {
         chart.data.labels = labels;
         chart.data.datasets[0].data = data;
-        chart.update(); // 🔥 lebih ringan daripada destroy
+        chart.update();
     }
 }
 
