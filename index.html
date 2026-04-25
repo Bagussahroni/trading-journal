@@ -33,6 +33,8 @@
             <button onclick="register()">Register</button>
             <button onclick="login()">Login</button>
             <button onclick="logout()">Logout</button>
+
+            <p id="userStatus">Belum login</p>
         </div>
 
         <!-- INPUT TRADE -->
@@ -165,12 +167,18 @@
     await signOut(auth);
   };
 
+  // 🔥 STATUS USER + LOAD DATA
   onAuthStateChanged(auth, async (user) => {
+    const status = document.getElementById("userStatus");
+
     if (user) {
       window.userId = user.uid;
+      status.innerText = "Login sebagai: " + user.email;
+
       await window.loadTrades();
     } else {
       window.userId = null;
+      status.innerText = "Belum login";
     }
   });
 
