@@ -4,17 +4,46 @@ let chart;
 
 document.getElementById("balance").value = balance;
 
+// SAVE DATA
 function saveData() {
     localStorage.setItem("trades", JSON.stringify(trades));
     localStorage.setItem("balance", balance);
 }
 
-function calcProfit(entry, exit, lot, type) {
-    return type === "buy"
-        ? (exit - entry) * lot
-        : (entry - exit) * lot;
+// ADD TRADE (PROFIT MANUAL)
+function tambahTrade() {
+    let tanggal = document.getElementById("tanggal").value;
+    let pair = document.getElementById("pair").value;
+    let type = document.getElementById("type").value;
+    let profit = parseFloat(document.getElementById("profit").value);
+
+    balance = parseFloat(document.getElementById("balance").value) || 0;
+
+    if (!tanggal || !pair || isNaN(profit)) {
+        alert("Lengkapi data!");
+        return;
+    }
+
+    trades.push({
+        tanggal,
+        pair,
+        type,
+        profit,
+        balance: balance + profit
+    });
+
+    saveData();
+    render();
 }
 
+// DELETE
+function hapus(i) {
+    trades.splice(i, 1);
+    saveData();
+    render();
+}
+
+// RENDER TABLE + STATS
 function render() {
     let table = document.getElementById("tableData");
     table.innerHTML = "";
@@ -22,15 +51,15 @@ function render() {
     let totalProfit = 0;
     let win = 0;
     let loss = 0;
-    let best = 0;
-    let worst = 0;
+    let best = -Infinity;
+    let worst = Infinity;
     let currentBalance = parseFloat(balance) || 0;
 
     trades.forEach((t, i) => {
-        let profit = calcProfit(t.entry, t.exit, t.lot, t.type);
+        let profit = t.profit;
+        currentBalance += profit;
 
         totalProfit += profit;
-        currentBalance += profit;
 
         if (profit > 0) {
             win++;
@@ -45,43 +74,38 @@ function render() {
                 <td>${t.tanggal}</td>
                 <td>${t.pair}</td>
                 <td>${t.type.toUpperCase()}</td>
-                <td>${t.entry}</td>
-                <td>${t.exit}</td>
-                <td>${t.lot}</td>
-                <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit.toFixed(2)}</td>
+                <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit}</td>
                 <td>${currentBalance.toFixed(2)}</td>
                 <td><button onclick="hapus(${i})">Hapus</button></td>
             </tr>
         `;
     });
 
-    let winrate = trades.length ? (win / trades.length * 100).toFixed(1) : 0;
+    let winrate = trades.length ? ((win / trades.length) * 100).toFixed(1) : 0;
 
     document.getElementById("totalProfit").innerText = totalProfit.toFixed(2);
     document.getElementById("winrate").innerText = winrate + "%";
 
-    // Analytics
     document.getElementById("totalTrade").innerText = trades.length;
     document.getElementById("winTrade").innerText = win;
     document.getElementById("lossTrade").innerText = loss;
-    document.getElementById("bestProfit").innerText = best.toFixed(2);
-    document.getElementById("worstLoss").innerText = worst.toFixed(2);
+    document.getElementById("bestProfit").innerText = best === -Infinity ? 0 : best;
+    document.getElementById("worstLoss").innerText = worst === Infinity ? 0 : worst;
 
     renderChart();
 }
 
+// CHART EQUITY
 function renderChart() {
     let labels = [];
-    let dataChart = [];
+    let data = [];
 
     let currentBalance = parseFloat(balance) || 0;
 
     trades.forEach((t, i) => {
-        let profit = calcProfit(t.entry, t.exit, t.lot, t.type);
-        currentBalance += profit;
-
+        currentBalance += t.profit;
         labels.push("T" + (i + 1));
-        dataChart.push(currentBalance);
+        data.push(currentBalance);
     });
 
     const ctx = document.getElementById("chart");
@@ -89,12 +113,12 @@ function renderChart() {
     if (chart) chart.destroy();
 
     chart = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
             labels: labels,
             datasets: [{
-                label: 'Equity',
-                data: dataChart,
+                label: "Equity Curve",
+                data: data,
                 borderWidth: 2,
                 tension: 0.3
             }]
@@ -102,31 +126,7 @@ function renderChart() {
     });
 }
 
-function tambahTrade() {
-    let tanggal = document.getElementById("tanggal").value;
-    let pair = document.getElementById("pair").value;
-    let type = document.getElementById("type").value;
-    let entry = parseFloat(document.getElementById("entry").value);
-    let exit = parseFloat(document.getElementById("exit").value);
-    let lot = parseFloat(document.getElementById("lot").value);
-    balance = parseFloat(document.getElementById("balance").value);
-
-    if (!tanggal || !pair || isNaN(entry) || isNaN(exit) || isNaN(lot)) {
-        alert("Lengkapi data!");
-        return;
-    }
-
-    trades.push({ tanggal, pair, type, entry, exit, lot });
-    saveData();
-    render();
-}
-
-function hapus(i) {
-    trades.splice(i, 1);
-    saveData();
-    render();
-}
-
+// PAGE SWITCH
 function showPage(page) {
     document.querySelectorAll(".page").forEach(p => {
         p.style.display = "none";
@@ -134,4 +134,5 @@ function showPage(page) {
     document.getElementById(page).style.display = "block";
 }
 
+// INIT
 render();
