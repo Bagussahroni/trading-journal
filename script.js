@@ -4,22 +4,21 @@ let chart;
 
 document.getElementById("balance").value = balance;
 
-// SAVE DATA
 function saveData() {
     localStorage.setItem("trades", JSON.stringify(trades));
     localStorage.setItem("balance", balance);
 }
 
-// ADD TRADE (PROFIT MANUAL)
+// ADD TRADE (profit manual + lot)
 function tambahTrade() {
     let tanggal = document.getElementById("tanggal").value;
     let pair = document.getElementById("pair").value;
     let type = document.getElementById("type").value;
+    let lot = parseFloat(document.getElementById("lot").value);
     let profit = parseFloat(document.getElementById("profit").value);
-
     balance = parseFloat(document.getElementById("balance").value) || 0;
 
-    if (!tanggal || !pair || isNaN(profit)) {
+    if (!tanggal || !pair || isNaN(lot) || isNaN(profit)) {
         alert("Lengkapi data!");
         return;
     }
@@ -28,6 +27,7 @@ function tambahTrade() {
         tanggal,
         pair,
         type,
+        lot,
         profit,
         balance: balance + profit
     });
@@ -43,7 +43,7 @@ function hapus(i) {
     render();
 }
 
-// RENDER TABLE + STATS
+// RENDER TABLE + ANALYTICS
 function render() {
     let table = document.getElementById("tableData");
     table.innerHTML = "";
@@ -74,6 +74,7 @@ function render() {
                 <td>${t.tanggal}</td>
                 <td>${t.pair}</td>
                 <td>${t.type.toUpperCase()}</td>
+                <td>${t.lot}</td>
                 <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit}</td>
                 <td>${currentBalance.toFixed(2)}</td>
                 <td><button onclick="hapus(${i})">Hapus</button></td>
@@ -95,7 +96,7 @@ function render() {
     renderChart();
 }
 
-// CHART EQUITY
+// CHART
 function renderChart() {
     let labels = [];
     let data = [];
@@ -126,13 +127,10 @@ function renderChart() {
     });
 }
 
-// PAGE SWITCH
+// PAGE
 function showPage(page) {
-    document.querySelectorAll(".page").forEach(p => {
-        p.style.display = "none";
-    });
+    document.querySelectorAll(".page").forEach(p => p.style.display = "none");
     document.getElementById(page).style.display = "block";
 }
 
-// INIT
 render();
