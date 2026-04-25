@@ -14,22 +14,34 @@ function saveData() {
 function tambahTrade() {
     let tanggal = document.getElementById("tanggal").value;
     let pair = document.getElementById("pair").value;
-    let price = parseFloat(document.getElementById("price").value);
+    let entry = parseFloat(document.getElementById("entry").value);
+    let exit = parseFloat(document.getElementById("exit").value);
     let type = document.getElementById("type").value;
     let lot = parseFloat(document.getElementById("lot").value);
-    let profit = parseFloat(document.getElementById("profit").value);
+    let manualProfit = document.getElementById("profit").value;
 
     balance = parseFloat(document.getElementById("balance").value) || 0;
 
-    if (!tanggal || !pair || isNaN(price) || isNaN(lot) || isNaN(profit)) {
+    if (!tanggal || !pair || isNaN(entry) || isNaN(exit) || isNaN(lot)) {
         alert("Lengkapi data!");
         return;
+    }
+
+    // AUTO PROFIT (kalau tidak isi manual)
+    let profit;
+    if (manualProfit !== "" && manualProfit !== null) {
+        profit = parseFloat(manualProfit);
+    } else {
+        profit = type === "buy"
+            ? (exit - entry) * lot
+            : (entry - exit) * lot;
     }
 
     trades.push({
         tanggal,
         pair,
-        price,
+        entry,
+        exit,
         type,
         lot,
         profit,
@@ -47,7 +59,7 @@ function hapus(i) {
     render();
 }
 
-// RENDER (OPTIMIZED)
+// RENDER TABLE + STATS
 function render() {
     let table = document.getElementById("tableData");
     let html = "";
@@ -78,10 +90,11 @@ function render() {
             <tr>
                 <td>${t.tanggal}</td>
                 <td>${t.pair}</td>
-                <td>${t.price}</td>
+                <td>${t.entry}</td>
+                <td>${t.exit}</td>
                 <td>${t.type.toUpperCase()}</td>
                 <td>${t.lot}</td>
-                <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit}</td>
+                <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit.toFixed(2)}</td>
                 <td>${currentBalance.toFixed(2)}</td>
                 <td><button onclick="hapus(${i})">Hapus</button></td>
             </tr>
@@ -104,7 +117,7 @@ function render() {
     renderChart();
 }
 
-// CHART (FAST + NO RESET)
+// CHART
 function renderChart() {
     let labels = [];
     let data = [];
