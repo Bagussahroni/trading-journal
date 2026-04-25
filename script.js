@@ -24,6 +24,7 @@ function render() {
     let loss = 0;
     let best = 0;
     let worst = 0;
+    let totalLoss = 0; // 🔥 tambahan
     let currentBalance = parseFloat(balance) || 0;
 
     trades.forEach((t, i) => {
@@ -37,6 +38,7 @@ function render() {
             if (profit > best) best = profit;
         } else {
             loss++;
+            totalLoss += profit; // 🔥 hitung total loss
             if (profit < worst) worst = profit;
         }
 
@@ -57,6 +59,7 @@ function render() {
 
     let winrate = trades.length ? (win / trades.length * 100).toFixed(1) : 0;
 
+    // Dashboard
     document.getElementById("totalProfit").innerText = totalProfit.toFixed(2);
     document.getElementById("winrate").innerText = winrate + "%";
 
@@ -66,6 +69,7 @@ function render() {
     document.getElementById("lossTrade").innerText = loss;
     document.getElementById("bestProfit").innerText = best.toFixed(2);
     document.getElementById("worstLoss").innerText = worst.toFixed(2);
+    document.getElementById("totalLoss").innerText = Math.abs(totalLoss).toFixed(2); // 🔥 tampilkan positif
 
     renderChart();
 }
