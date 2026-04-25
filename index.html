@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Trading Journal Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>📊 Trading Journal Pro</h1>
+
+<div class="card">
+    <input type="number" id="balance" placeholder="Modal Awal (1000)">
+    <input type="date" id="tanggal">
+    <input type="text" id="pair" placeholder="BTC/USDT">
+
+    <select id="type">
+        <option value="buy">BUY</option>
+        <option value="sell">SELL</option>
+    </select>
+
+    <input type="number" id="entry" placeholder="Entry">
+    <input type="number" id="exit" placeholder="Exit">
+    <input type="number" id="lot" placeholder="Lot">
+
+    <button onclick="tambahTrade()">Tambah Trade</button>
+</div>
+
+<div class="stats">
+    <p>Total Profit: <span id="totalProfit">0</span></p>
+    <p>Winrate: <span id="winrate">0%</span></p>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tanggal</th>
+            <th>Pair</th>
+            <th>Type</th>
+            <th>Entry</th>
+            <th>Exit</th>
+            <th>Lot</th>
+            <th>Profit</th>
+            <th>Balance</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody id="tableData"></tbody>
+</table>
+
+<script src="script.js"></script>
+</body>
+</html>
