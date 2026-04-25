@@ -21,6 +21,9 @@ function render() {
 
     let totalProfit = 0;
     let win = 0;
+    let loss = 0;
+    let best = 0;
+    let worst = 0;
     let currentBalance = parseFloat(balance) || 0;
 
     trades.forEach((t, i) => {
@@ -29,7 +32,13 @@ function render() {
         totalProfit += profit;
         currentBalance += profit;
 
-        if (profit > 0) win++;
+        if (profit > 0) {
+            win++;
+            if (profit > best) best = profit;
+        } else {
+            loss++;
+            if (profit < worst) worst = profit;
+        }
 
         table.innerHTML += `
             <tr>
@@ -51,6 +60,13 @@ function render() {
     document.getElementById("totalProfit").innerText = totalProfit.toFixed(2);
     document.getElementById("winrate").innerText = winrate + "%";
 
+    // Analytics
+    document.getElementById("totalTrade").innerText = trades.length;
+    document.getElementById("winTrade").innerText = win;
+    document.getElementById("lossTrade").innerText = loss;
+    document.getElementById("bestProfit").innerText = best.toFixed(2);
+    document.getElementById("worstLoss").innerText = worst.toFixed(2);
+
     renderChart();
 }
 
@@ -64,29 +80,24 @@ function renderChart() {
         let profit = calcProfit(t.entry, t.exit, t.lot, t.type);
         currentBalance += profit;
 
-        labels.push("Trade " + (i + 1));
+        labels.push("T" + (i + 1));
         dataChart.push(currentBalance);
     });
 
     const ctx = document.getElementById("chart");
 
-    if (chart) {
-        chart.destroy();
-    }
+    if (chart) chart.destroy();
 
     chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Equity Growth',
+                label: 'Equity',
                 data: dataChart,
                 borderWidth: 2,
                 tension: 0.3
             }]
-        },
-        options: {
-            responsive: true
         }
     });
 }
@@ -114,6 +125,13 @@ function hapus(i) {
     trades.splice(i, 1);
     saveData();
     render();
+}
+
+function showPage(page) {
+    document.querySelectorAll(".page").forEach(p => {
+        p.style.display = "none";
+    });
+    document.getElementById(page).style.display = "block";
 }
 
 render();
