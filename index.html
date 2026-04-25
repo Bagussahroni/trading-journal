@@ -29,8 +29,9 @@
             <input type="date" id="tanggal">
             <input type="text" id="pair" placeholder="BTC/USDT">
 
-            <!-- HARGA ENTRY -->
-            <input type="number" id="price" placeholder="Harga Entry">
+            <!-- ENTRY & EXIT -->
+            <input type="number" id="entry" placeholder="Harga Entry">
+            <input type="number" id="exit" placeholder="Harga Exit">
 
             <select id="type">
                 <option value="buy">BUY</option>
@@ -40,7 +41,7 @@
             <!-- LOT -->
             <input type="number" id="lot" placeholder="Lot">
 
-            <!-- PROFIT MANUAL -->
+            <!-- PROFIT MANUAL (optional override) -->
             <input type="number" id="profit" placeholder="Profit (Manual)">
 
             <button onclick="tambahTrade()">+ Add Trade</button>
@@ -72,7 +73,8 @@
                     <tr>
                         <th>Tanggal</th>
                         <th>Pair</th>
-                        <th>Price</th>
+                        <th>Entry</th>
+                        <th>Exit</th>
                         <th>Type</th>
                         <th>Lot</th>
                         <th>Profit</th>
