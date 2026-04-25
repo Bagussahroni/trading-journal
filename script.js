@@ -158,7 +158,15 @@ async function tambahTrade() {
 async function loadTrades() {
     if (!window.userId) return;
 
-    trades = await window.getTrades();
+ await window.saveTrade({
+    tanggal,
+    pair,
+    type,
+    entry,
+    exit,
+    lot,
+    profit
+});
     render();
 }
 
