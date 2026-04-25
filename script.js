@@ -4,12 +4,13 @@ let chart;
 
 document.getElementById("balance").value = balance;
 
+// SAVE
 function saveData() {
     localStorage.setItem("trades", JSON.stringify(trades));
     localStorage.setItem("balance", balance);
 }
 
-// ADD TRADE (profit manual + lot)
+// ADD TRADE
 function tambahTrade() {
     let tanggal = document.getElementById("tanggal").value;
     let pair = document.getElementById("pair").value;
@@ -43,11 +44,12 @@ function hapus(i) {
     render();
 }
 
-// RENDER TABLE + ANALYTICS
+// RENDER (OPTIMIZED ⚡)
 function render() {
     let table = document.getElementById("tableData");
-    table.innerHTML = "";
 
+    let html = ""; // 🔥 lebih cepat dari innerHTML +=
+    
     let totalProfit = 0;
     let win = 0;
     let loss = 0;
@@ -55,10 +57,11 @@ function render() {
     let worst = Infinity;
     let currentBalance = parseFloat(balance) || 0;
 
-    trades.forEach((t, i) => {
+    for (let i = 0; i < trades.length; i++) {
+        let t = trades[i];
         let profit = t.profit;
-        currentBalance += profit;
 
+        currentBalance += profit;
         totalProfit += profit;
 
         if (profit > 0) {
@@ -69,7 +72,7 @@ function render() {
             if (profit < worst) worst = profit;
         }
 
-        table.innerHTML += `
+        html += `
             <tr>
                 <td>${t.tanggal}</td>
                 <td>${t.pair}</td>
@@ -80,7 +83,9 @@ function render() {
                 <td><button onclick="hapus(${i})">Hapus</button></td>
             </tr>
         `;
-    });
+    }
+
+    table.innerHTML = html;
 
     let winrate = trades.length ? ((win / trades.length) * 100).toFixed(1) : 0;
 
@@ -96,38 +101,42 @@ function render() {
     renderChart();
 }
 
-// CHART
+// CHART (FAST UPDATE ⚡ NO DESTROY)
 function renderChart() {
     let labels = [];
     let data = [];
 
     let currentBalance = parseFloat(balance) || 0;
 
-    trades.forEach((t, i) => {
-        currentBalance += t.profit;
-        labels.push("T" + (i + 1));
+    for (let i = 0; i < trades.length; i++) {
+        currentBalance += trades[i].profit;
+        labels.push(i + 1);
         data.push(currentBalance);
-    });
+    }
 
     const ctx = document.getElementById("chart");
 
-    if (chart) chart.destroy();
-
-    chart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Equity Curve",
-                data: data,
-                borderWidth: 2,
-                tension: 0.3
-            }]
-        }
-    });
+    if (!chart) {
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Equity Curve",
+                    data: data,
+                    borderWidth: 2,
+                    tension: 0.3
+                }]
+            }
+        });
+    } else {
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = data;
+        chart.update(); // 🔥 lebih ringan daripada destroy
+    }
 }
 
-// PAGE
+// PAGE SWITCH
 function showPage(page) {
     document.querySelectorAll(".page").forEach(p => p.style.display = "none");
     document.getElementById(page).style.display = "block";
