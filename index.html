@@ -1,103 +1,90 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Trading Journal Pro</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<script type="module">
+  // 🔥 IMPORT FIREBASE
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h2>📈 Journal</h2>
-    <p onclick="showPage('dashboard')">Dashboard</p>
-    <p onclick="showPage('history')">History</p>
-    <p onclick="showPage('analytics')">Analytics</p>
-</div>
+  // 🔑 CONFIG KAMU
+  const firebaseConfig = {
+    apiKey: "AIzaSyALuiOK0XIrbGtaUnnFsTvpYnTwxqi2Rsg",
+    authDomain: "trading-journal-32050.firebaseapp.com",
+    projectId: "trading-journal-32050",
+    storageBucket: "trading-journal-32050.firebasestorage.app",
+    messagingSenderId: "435004813714",
+    appId: "1:435004813714:web:b5352450753812123e514b",
+    measurementId: "G-VE3PNH7XX5"
+  };
 
-<div class="main">
+  // 🚀 INIT
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="page">
+  // 🌍 GLOBAL (biar bisa dipakai di script.js)
+  window.auth = auth;
+  window.db = db;
 
-        <div class="topbar">
-            <h1>Trading Journal</h1>
-        </div>
+  // 🔐 AUTH FUNCTIONS
+  window.register = async function () {
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
 
-        <div class="card">
-            <input type="number" id="balance" placeholder="Balance">
-            <input type="date" id="tanggal">
-            <input type="text" id="pair" placeholder="BTC/USDT">
+    try {
+      await createUserWithEmailAndPassword(auth, email, pass);
+      alert("Register sukses");
+    } catch (e) {
+      alert(e.message);
+    }
+  };
 
-            <select id="type">
-                <option value="buy">BUY</option>
-                <option value="sell">SELL</option>
-            </select>
+  window.login = async function () {
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
 
-            <input type="number" id="entry" placeholder="Entry">
-            <input type="number" id="exit" placeholder="Exit">
-            <input type="number" id="lot" placeholder="Lot">
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      alert("Login sukses");
+    } catch (e) {
+      alert(e.message);
+    }
+  };
 
-            <button onclick="tambahTrade()">+ Add Trade</button>
-        </div>
+  window.logout = async function () {
+    await signOut(auth);
+  };
 
-        <div class="stats">
-            <div class="box">
-                <p>Total Profit</p>
-                <h2 id="totalProfit">0</h2>
-            </div>
-            <div class="box">
-                <p>Winrate</p>
-                <h2 id="winrate">0%</h2>
-            </div>
-        </div>
+  // 👤 CEK USER LOGIN
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      window.userId = user.uid;
+      await window.loadTrades(); // panggil dari script.js
+    } else {
+      window.userId = null;
+    }
+  });
 
-        <div class="card">
-            <canvas id="chart"></canvas>
-        </div>
+  // 💾 FIRESTORE FUNCTIONS
+  window.saveTrade = async function (trade) {
+    if (!window.userId) {
+      alert("Login dulu!");
+      return;
+    }
 
-    </div>
+    await addDoc(collection(db, "trades"), {
+      ...trade,
+      userId: window.userId
+    });
+  };
 
-    <!-- HISTORY -->
-    <div id="history" class="page" style="display:none;">
-        <div class="card">
-            <h2>📜 History Trading</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Pair</th>
-                        <th>Type</th>
-                        <th>Entry</th>
-                        <th>Exit</th>
-                        <th>Lot</th>
-                        <th>Profit</th>
-                        <th>Balance</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableData"></tbody>
-            </table>
-        </div>
-    </div>
+  window.getTrades = async function () {
+    const q = query(collection(db, "trades"), where("userId", "==", window.userId));
+    const querySnapshot = await getDocs(q);
 
-    <!-- ANALYTICS -->
-    <div id="analytics" class="page" style="display:none;">
-        <div class="card">
-            <h2>📊 Analytics</h2>
-            <p>Total Trade: <span id="totalTrade">0</span></p>
-            <p>Win: <span id="winTrade">0</span></p>
-            <p>Loss: <span id="lossTrade">0</span></p>
-            <p>Total Loss: <span id="totalLoss">0</span></p> <!-- 🔥 tambahan -->
-            <p>Best Profit: <span id="bestProfit">0</span></p>
-            <p>Worst Loss: <span id="worstLoss">0</span></p>
-        </div>
-    </div>
+    let data = [];
+    querySnapshot.forEach(doc => {
+      data.push(doc.data());
+    });
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="script.js"></script>
-
-</body>
-</html>
+    return data;
+  };
+</script>
