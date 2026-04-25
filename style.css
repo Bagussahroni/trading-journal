@@ -1,54 +1,100 @@
 body {
+    margin: 0;
     font-family: Arial;
+    background: #0a0f1a;
+    color: #e5e7eb;
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    width: 200px;
+    height: 100%;
     background: #0f172a;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+}
+
+.sidebar p {
+    margin: 10px 0;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.sidebar p:hover {
     color: white;
-    text-align: center;
 }
 
-h1 {
-    margin: 20px;
+/* MAIN */
+.main {
+    margin-left: 220px;
+    padding: 20px;
 }
 
-.card {
-    background: #1e293b;
+/* TOPBAR */
+.topbar {
+    background: #0f172a;
     padding: 15px;
     border-radius: 10px;
-    display: inline-block;
 }
 
+/* CARD */
+.card {
+    background: #111827;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+/* INPUT */
 .card input, select {
     margin: 5px;
     padding: 8px;
+    background: #1f2937;
+    border: none;
+    color: white;
 }
 
 button {
     padding: 10px;
     background: #22c55e;
     border: none;
-    color: white;
     cursor: pointer;
 }
 
+/* STATS */
 .stats {
+    display: flex;
+    gap: 20px;
     margin-top: 20px;
-    font-size: 18px;
 }
 
+.box {
+    background: #111827;
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1;
+    text-align: center;
+}
+
+/* TABLE */
 table {
-    margin: 20px auto;
+    width: 100%;
     border-collapse: collapse;
-    width: 90%;
 }
 
 th, td {
-    border: 1px solid #334155;
     padding: 10px;
+    border-bottom: 1px solid #1f2937;
 }
 
 .profit {
-    color: #4ade80;
+    color: #22c55e;
 }
 
 .loss {
-    color: #f87171;
+    color: #ef4444;
 }
