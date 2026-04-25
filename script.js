@@ -1,0 +1,79 @@
+let trades = JSON.parse(localStorage.getItem("trades")) || [];
+let balance = localStorage.getItem("balance") || 0;
+
+document.getElementById("balance").value = balance;
+
+function saveData() {
+    localStorage.setItem("trades", JSON.stringify(trades));
+    localStorage.setItem("balance", balance);
+}
+
+function calcProfit(entry, exit, lot, type) {
+    return type === "buy"
+        ? (exit - entry) * lot
+        : (entry - exit) * lot;
+}
+
+function render() {
+    let table = document.getElementById("tableData");
+    table.innerHTML = "";
+
+    let totalProfit = 0;
+    let win = 0;
+    let currentBalance = parseFloat(balance) || 0;
+
+    trades.forEach((t, i) => {
+        let profit = calcProfit(t.entry, t.exit, t.lot, t.type);
+
+        totalProfit += profit;
+        currentBalance += profit;
+
+        if (profit > 0) win++;
+
+        table.innerHTML += `
+            <tr>
+                <td>${t.tanggal}</td>
+                <td>${t.pair}</td>
+                <td>${t.type.toUpperCase()}</td>
+                <td>${t.entry}</td>
+                <td>${t.exit}</td>
+                <td>${t.lot}</td>
+                <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit.toFixed(2)}</td>
+                <td>${currentBalance.toFixed(2)}</td>
+                <td><button onclick="hapus(${i})">Hapus</button></td>
+            </tr>
+        `;
+    });
+
+    let winrate = trades.length ? (win / trades.length * 100).toFixed(1) : 0;
+
+    document.getElementById("totalProfit").innerText = totalProfit.toFixed(2);
+    document.getElementById("winrate").innerText = winrate + "%";
+}
+
+function tambahTrade() {
+    let tanggal = document.getElementById("tanggal").value;
+    let pair = document.getElementById("pair").value;
+    let type = document.getElementById("type").value;
+    let entry = parseFloat(document.getElementById("entry").value);
+    let exit = parseFloat(document.getElementById("exit").value);
+    let lot = parseFloat(document.getElementById("lot").value);
+    balance = parseFloat(document.getElementById("balance").value);
+
+    if (!tanggal || !pair || isNaN(entry) || isNaN(exit) || isNaN(lot)) {
+        alert("Lengkapi data!");
+        return;
+    }
+
+    trades.push({ tanggal, pair, type, entry, exit, lot });
+    saveData();
+    render();
+}
+
+function hapus(i) {
+    trades.splice(i, 1);
+    saveData();
+    render();
+}
+
+render();
