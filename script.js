@@ -1,43 +1,35 @@
-let trades = [];
-let balance = 0;
+let trades = JSON.parse(localStorage.getItem("trades")) || [];
+let balance = localStorage.getItem("balance") || 0;
 let chart;
 
-/* ⚡ PROFIT MANUAL HELPER */
-function setProfit(value) {
-    document.getElementById("profit").value = value;
+document.getElementById("balance").value = balance;
+
+function saveData() {
+    localStorage.setItem("trades", JSON.stringify(trades));
+    localStorage.setItem("balance", balance);
 }
 
-/* =========================
-   RENDER UI
-========================= */
+function calcProfit(entry, exit, lot, type) {
+    return type === "buy"
+        ? (exit - entry) * lot
+        : (entry - exit) * lot;
+}
+
 function render() {
     let table = document.getElementById("tableData");
     table.innerHTML = "";
 
     let totalProfit = 0;
     let win = 0;
-    let loss = 0;
-    let best = 0;
-    let worst = 0;
-    let totalLoss = 0;
     let currentBalance = parseFloat(balance) || 0;
 
     trades.forEach((t, i) => {
-
-        // 🔥 PROFIT MANUAL (NO AUTO CALC)
-        let profit = parseFloat(t.profit) || 0;
+        let profit = calcProfit(t.entry, t.exit, t.lot, t.type);
 
         totalProfit += profit;
         currentBalance += profit;
 
-        if (profit > 0) {
-            win++;
-            if (profit > best) best = profit;
-        } else {
-            loss++;
-            totalLoss += profit;
-            if (profit < worst) worst = profit;
-        }
+        if (profit > 0) win++;
 
         table.innerHTML += `
             <tr>
@@ -56,134 +48,72 @@ function render() {
 
     let winrate = trades.length ? (win / trades.length * 100).toFixed(1) : 0;
 
-    // DASHBOARD
     document.getElementById("totalProfit").innerText = totalProfit.toFixed(2);
     document.getElementById("winrate").innerText = winrate + "%";
-
-    // ANALYTICS
-    document.getElementById("totalTrade").innerText = trades.length;
-    document.getElementById("winTrade").innerText = win;
-    document.getElementById("lossTrade").innerText = loss;
-    document.getElementById("bestProfit").innerText = best.toFixed(2);
-    document.getElementById("worstLoss").innerText = worst.toFixed(2);
-    document.getElementById("totalLoss").innerText = Math.abs(totalLoss).toFixed(2);
 
     renderChart();
 }
 
-/* =========================
-   CHART
-========================= */
 function renderChart() {
     let labels = [];
     let dataChart = [];
+
     let currentBalance = parseFloat(balance) || 0;
 
     trades.forEach((t, i) => {
-
-        // 🔥 PROFIT MANUAL
-        let profit = parseFloat(t.profit) || 0;
-
+        let profit = calcProfit(t.entry, t.exit, t.lot, t.type);
         currentBalance += profit;
 
-        labels.push("T" + (i + 1));
+        labels.push("Trade " + (i + 1));
         dataChart.push(currentBalance);
     });
 
     const ctx = document.getElementById("chart");
 
-    if (chart) chart.destroy();
+    if (chart) {
+        chart.destroy();
+    }
 
     chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Equity',
+                label: 'Equity Growth',
                 data: dataChart,
                 borderWidth: 2,
                 tension: 0.3
             }]
+        },
+        options: {
+            responsive: true
         }
     });
 }
 
-/* =========================
-   TAMBAH TRADE (FIREBASE)
-========================= */
-async function tambahTrade() {
+function tambahTrade() {
     let tanggal = document.getElementById("tanggal").value;
     let pair = document.getElementById("pair").value;
     let type = document.getElementById("type").value;
     let entry = parseFloat(document.getElementById("entry").value);
     let exit = parseFloat(document.getElementById("exit").value);
     let lot = parseFloat(document.getElementById("lot").value);
-
-    // 🔥 PROFIT MANUAL INPUT
-    let profit = parseFloat(document.getElementById("profit").value) || 0;
-
-    if (!window.userId) {
-        alert("Login dulu!");
-        return;
-    }
+    balance = parseFloat(document.getElementById("balance").value);
 
     if (!tanggal || !pair || isNaN(entry) || isNaN(exit) || isNaN(lot)) {
         alert("Lengkapi data!");
         return;
     }
 
-    await window.saveTrade({
-        tanggal,
-        pair,
-        type,
-        entry,
-        exit,
-        lot,
-        profit
-    });
-
-    // reset input
-    document.getElementById("pair").value = "";
-    document.getElementById("entry").value = "";
-    document.getElementById("exit").value = "";
-    document.getElementById("lot").value = "";
-    document.getElementById("profit").value = "";
-
-    loadTrades();
-}
-
-/* =========================
-   LOAD DATA
-========================= */
-async function loadTrades() {
-    if (!window.userId) return;
-
- await window.saveTrade({
-    tanggal,
-    pair,
-    type,
-    entry,
-    exit,
-    lot,
-    profit
-});
+    trades.push({ tanggal, pair, type, entry, exit, lot });
+    saveData();
     render();
 }
 
-/* =========================
-   HAPUS (LOCAL ONLY)
-========================= */
 function hapus(i) {
     trades.splice(i, 1);
+    saveData();
     render();
 }
 
-/* =========================
-   NAVIGASI
-========================= */
-function showPage(page) {
-    document.querySelectorAll(".page").forEach(p => {
-        p.style.display = "none";
-    });
-    document.getElementById(page).style.display = "block";
-}
+render();
