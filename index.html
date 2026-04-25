@@ -1,49 +1,59 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Trading Journal Manual</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Trading Journal Pro</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="container">
-    <h1>📊 Trading Journal Manual</h1>
+<h1>📊 Trading Journal Pro</h1>
 
-    <div class="form">
-      <input type="text" id="pair" placeholder="Pair (BTC/USD)">
-      <input type="number" id="entry" placeholder="Entry Price">
-      <input type="number" id="exit" placeholder="Exit Price">
-      <input type="number" id="lot" placeholder="Lot">
-      
-      <select id="type">
+<div class="card">
+    <input type="number" id="balance" placeholder="Modal Awal (1000)">
+    <input type="date" id="tanggal">
+    <input type="text" id="pair" placeholder="BTC/USDT">
+
+    <select id="type">
         <option value="buy">BUY</option>
         <option value="sell">SELL</option>
-      </select>
+    </select>
 
-      <button onclick="addTrade()">Tambah Trade</button>
-    </div>
+    <input type="number" id="entry" placeholder="Entry">
+    <input type="number" id="exit" placeholder="Exit">
+    <input type="number" id="lot" placeholder="Lot">
 
-    <h2>History Trade</h2>
+    <button onclick="tambahTrade()">Tambah Trade</button>
+</div>
 
-    <table>
-      <thead>
+<div class="stats">
+    <p>Total Profit: <span id="totalProfit">0</span></p>
+    <p>Winrate: <span id="winrate">0%</span></p>
+</div>
+
+<!-- 📈 GRAFIK -->
+<canvas id="chart" style="max-width: 900px; margin: 30px auto;"></canvas>
+
+<table>
+    <thead>
         <tr>
-          <th>Pair</th>
-          <th>Type</th>
-          <th>Entry</th>
-          <th>Exit</th>
-          <th>Lot</th>
-          <th>Profit</th>
-          <th>Aksi</th>
+            <th>Tanggal</th>
+            <th>Pair</th>
+            <th>Type</th>
+            <th>Entry</th>
+            <th>Exit</th>
+            <th>Lot</th>
+            <th>Profit</th>
+            <th>Balance</th>
+            <th>Aksi</th>
         </tr>
-      </thead>
-      <tbody id="tradeList"></tbody>
-    </table>
+    </thead>
+    <tbody id="tableData"></tbody>
+</table>
 
-    <h2 id="totalProfit">Total Profit: 0</h2>
-  </div>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
 
-  <script src="app.js"></script>
 </body>
 </html>
