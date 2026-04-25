@@ -7,51 +7,79 @@
 </head>
 <body>
 
-<h1>📊 Trading Journal Pro</h1>
-
-<div class="card">
-    <input type="number" id="balance" placeholder="Modal Awal (1000)">
-    <input type="date" id="tanggal">
-    <input type="text" id="pair" placeholder="BTC/USDT">
-
-    <select id="type">
-        <option value="buy">BUY</option>
-        <option value="sell">SELL</option>
-    </select>
-
-    <input type="number" id="entry" placeholder="Entry">
-    <input type="number" id="exit" placeholder="Exit">
-    <input type="number" id="lot" placeholder="Lot">
-
-    <button onclick="tambahTrade()">Tambah Trade</button>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>📈 Journal</h2>
+    <p>Dashboard</p>
+    <p>History</p>
+    <p>Analytics</p>
 </div>
 
-<div class="stats">
-    <p>Total Profit: <span id="totalProfit">0</span></p>
-    <p>Winrate: <span id="winrate">0%</span></p>
+<!-- MAIN -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <h1>Trading Journal</h1>
+    </div>
+
+    <!-- INPUT -->
+    <div class="card">
+        <input type="number" id="balance" placeholder="Balance">
+        <input type="date" id="tanggal">
+        <input type="text" id="pair" placeholder="BTC/USDT">
+
+        <select id="type">
+            <option value="buy">BUY</option>
+            <option value="sell">SELL</option>
+        </select>
+
+        <input type="number" id="entry" placeholder="Entry">
+        <input type="number" id="exit" placeholder="Exit">
+        <input type="number" id="lot" placeholder="Lot">
+
+        <button onclick="tambahTrade()">+ Add Trade</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div class="box">
+            <p>Total Profit</p>
+            <h2 id="totalProfit">0</h2>
+        </div>
+        <div class="box">
+            <p>Winrate</p>
+            <h2 id="winrate">0%</h2>
+        </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="card">
+        <canvas id="chart"></canvas>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Pair</th>
+                    <th>Type</th>
+                    <th>Entry</th>
+                    <th>Exit</th>
+                    <th>Lot</th>
+                    <th>Profit</th>
+                    <th>Balance</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="tableData"></tbody>
+        </table>
+    </div>
+
 </div>
 
-<!-- 📈 GRAFIK -->
-<canvas id="chart" style="max-width: 900px; margin: 30px auto;"></canvas>
-
-<table>
-    <thead>
-        <tr>
-            <th>Tanggal</th>
-            <th>Pair</th>
-            <th>Type</th>
-            <th>Entry</th>
-            <th>Exit</th>
-            <th>Lot</th>
-            <th>Profit</th>
-            <th>Balance</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody id="tableData"></tbody>
-</table>
-
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
 
