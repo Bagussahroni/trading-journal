@@ -1,5 +1,6 @@
 let trades = JSON.parse(localStorage.getItem("trades")) || [];
 let balance = localStorage.getItem("balance") || 0;
+let chart;
 
 document.getElementById("balance").value = balance;
 
@@ -49,6 +50,45 @@ function render() {
 
     document.getElementById("totalProfit").innerText = totalProfit.toFixed(2);
     document.getElementById("winrate").innerText = winrate + "%";
+
+    renderChart();
+}
+
+function renderChart() {
+    let labels = [];
+    let dataChart = [];
+
+    let currentBalance = parseFloat(balance) || 0;
+
+    trades.forEach((t, i) => {
+        let profit = calcProfit(t.entry, t.exit, t.lot, t.type);
+        currentBalance += profit;
+
+        labels.push("Trade " + (i + 1));
+        dataChart.push(currentBalance);
+    });
+
+    const ctx = document.getElementById("chart");
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Equity Growth',
+                data: dataChart,
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
 }
 
 function tambahTrade() {
