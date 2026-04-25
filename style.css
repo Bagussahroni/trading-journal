@@ -1,41 +1,54 @@
 body {
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
-  text-align: center;
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    text-align: center;
 }
 
-.container {
-  width: 90%;
-  margin: auto;
-  padding-top: 20px;
+h1 {
+    margin: 20px;
 }
 
-.form input, .form select {
-  padding: 10px;
-  margin: 5px;
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.card input, select {
+    margin: 5px;
+    padding: 8px;
 }
 
 button {
-  padding: 10px 15px;
-  background: #22c55e;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
+    padding: 10px;
+    background: #22c55e;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.stats {
+    margin-top: 20px;
+    font-size: 18px;
 }
 
 table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 90%;
 }
 
 th, td {
-  padding: 10px;
-  border: 1px solid #334155;
+    border: 1px solid #334155;
+    padding: 10px;
 }
 
-th {
-  background: #1e293b;
+.profit {
+    color: #4ade80;
+}
+
+.loss {
+    color: #f87171;
 }
