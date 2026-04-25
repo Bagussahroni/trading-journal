@@ -1,0 +1,53 @@
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    margin: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.card input, select {
+    margin: 5px;
+    padding: 8px;
+}
+
+button {
+    padding: 10px;
+    background: #22c55e;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.stats {
+    margin-top: 20px;
+}
+
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 90%;
+}
+
+th, td {
+    border: 1px solid #334155;
+    padding: 10px;
+}
+
+.profit {
+    color: #4ade80;
+}
+
+.loss {
+    color: #f87171;
+}
