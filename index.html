@@ -1,227 +1,49 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Trading Journal Pro</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Trading Journal Manual</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h2>📈 Journal</h2>
-    <p onclick="showPage('dashboard')">Dashboard</p>
-    <p onclick="showPage('history')">History</p>
-    <p onclick="showPage('analytics')">Analytics</p>
-</div>
+  <div class="container">
+    <h1>📊 Trading Journal Manual</h1>
 
-<div class="main">
-
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="page">
-
-        <div class="topbar">
-            <h1>Trading Journal</h1>
-        </div>
-
-        <!-- 🔐 LOGIN -->
-        <div class="card">
-            <h3>🔐 Login</h3>
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Password">
-
-            <button onclick="register()">Register</button>
-            <button onclick="login()">Login</button>
-            <button onclick="logout()">Logout</button>
-
-            <p id="userStatus">Belum login</p>
-        </div>
-
-<!-- INPUT TRADE -->
-<div class="card">
-    <input type="number" id="balance" placeholder="Balance">
-    <input type="date" id="tanggal">
-    <input type="text" id="pair" placeholder="BTC/USDT">
-
-    <select id="type">
+    <div class="form">
+      <input type="text" id="pair" placeholder="Pair (BTC/USD)">
+      <input type="number" id="entry" placeholder="Entry Price">
+      <input type="number" id="exit" placeholder="Exit Price">
+      <input type="number" id="lot" placeholder="Lot">
+      
+      <select id="type">
         <option value="buy">BUY</option>
         <option value="sell">SELL</option>
-    </select>
+      </select>
 
-    <input type="number" id="entry" placeholder="Entry">
-    <input type="number" id="exit" placeholder="Exit">
-    <input type="number" id="lot" placeholder="Lot">
-
-    <!-- 💰 PROFIT MANUAL -->
-    <input type="number" id="profit" placeholder="Profit (isi manual)">
-
-    <!-- ⚡ QUICK PROFIT -->
-    <div style="margin-top:10px;">
-        <button type="button" onclick="setProfit(10)">+10</button>
-        <button type="button" onclick="setProfit(20)">+20</button>
-        <button type="button" onclick="setProfit(50)">+50</button>
-        <button type="button" onclick="setProfit(-10)">-10</button>
-        <button type="button" onclick="setProfit(-20)">-20</button>
-        <button type="button" onclick="setProfit(-50)">-50</button>
+      <button onclick="addTrade()">Tambah Trade</button>
     </div>
 
-    <button onclick="tambahTrade()" style="margin-top:10px;">
-        + Add Trade
-    </button>
-</div>
+    <h2>History Trade</h2>
 
-<!-- STATS -->
-<div class="stats">
-    <div class="box">
-        <p>Total Profit</p>
-        <h2 id="totalProfit">0</h2>
-    </div>
-    <div class="box">
-        <p>Winrate</p>
-        <h2 id="winrate">0%</h2>
-    </div>
-</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Pair</th>
+          <th>Type</th>
+          <th>Entry</th>
+          <th>Exit</th>
+          <th>Lot</th>
+          <th>Profit</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tradeList"></tbody>
+    </table>
 
-<!-- CHART -->
-<div class="card">
-    <canvas id="chart"></canvas>
-</div>
-    <!-- HISTORY -->
-    <div id="history" class="page" style="display:none;">
-        <div class="card">
-            <h2>📜 History Trading</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Pair</th>
-                        <th>Type</th>
-                        <th>Entry</th>
-                        <th>Exit</th>
-                        <th>Lot</th>
-                        <th>Profit</th>
-                        <th>Balance</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableData"></tbody>
-            </table>
-        </div>
-    </div>
+    <h2 id="totalProfit">Total Profit: 0</h2>
+  </div>
 
-    <!-- ANALYTICS -->
-    <div id="analytics" class="page" style="display:none;">
-        <div class="card">
-            <h2>📊 Analytics</h2>
-            <p>Total Trade: <span id="totalTrade">0</span></p>
-            <p>Win: <span id="winTrade">0</span></p>
-            <p>Loss: <span id="lossTrade">0</span></p>
-            <p>Total Loss: <span id="totalLoss">0</span></p>
-            <p>Best Profit: <span id="bestProfit">0</span></p>
-            <p>Worst Loss: <span id="worstLoss">0</span></p>
-        </div>
-    </div>
-
-</div>
-
-<!-- 📊 CHART -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- 🔥 FIREBASE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyALuiOK0XIrbGtaUnnFsTvpYnTwxqi2Rsg",
-    authDomain: "trading-journal-32050.firebaseapp.com",
-    projectId: "trading-journal-32050",
-    storageBucket: "trading-journal-32050.firebasestorage.app",
-    messagingSenderId: "435004813714",
-    appId: "1:435004813714:web:b5352450753812123e514b",
-    measurementId: "G-VE3PNH7XX5"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  window.auth = auth;
-  window.db = db;
-
-  // AUTH
-  window.register = async function () {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-
-    try {
-      await createUserWithEmailAndPassword(auth, email, pass);
-      alert("Register sukses");
-    } catch (e) {
-      alert(e.message);
-    }
-  };
-
-  window.login = async function () {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-
-    try {
-      await signInWithEmailAndPassword(auth, email, pass);
-      alert("Login sukses");
-    } catch (e) {
-      alert(e.message);
-    }
-  };
-
-  window.logout = async function () {
-    await signOut(auth);
-  };
-
-  // 🔥 STATUS USER + LOAD DATA
-  onAuthStateChanged(auth, async (user) => {
-    const status = document.getElementById("userStatus");
-
-    if (user) {
-      window.userId = user.uid;
-      status.innerText = "Login sebagai: " + user.email;
-
-      await window.loadTrades();
-    } else {
-      window.userId = null;
-      status.innerText = "Belum login";
-    }
-  });
-
-  // FIRESTORE
-  window.saveTrade = async function (trade) {
-    if (!window.userId) {
-      alert("Login dulu!");
-      return;
-    }
-
-    await addDoc(collection(db, "trades"), {
-      ...trade,
-      userId: window.userId
-    });
-  };
-
-  window.getTrades = async function () {
-    const q = query(collection(db, "trades"), where("userId", "==", window.userId));
-    const querySnapshot = await getDocs(q);
-
-    let data = [];
-    querySnapshot.forEach(doc => {
-      data.push(doc.data());
-    });
-
-    return data;
-  };
-</script>
-
-<!-- SCRIPT UTAMA -->
-<script src="script.js"></script>
-
+  <script src="app.js"></script>
 </body>
 </html>
