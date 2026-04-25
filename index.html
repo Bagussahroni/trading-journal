@@ -37,43 +37,55 @@
             <p id="userStatus">Belum login</p>
         </div>
 
-        <!-- INPUT TRADE -->
-        <div class="card">
-            <input type="number" id="balance" placeholder="Balance">
-            <input type="date" id="tanggal">
-            <input type="text" id="pair" placeholder="BTC/USDT">
+<!-- INPUT TRADE -->
+<div class="card">
+    <input type="number" id="balance" placeholder="Balance">
+    <input type="date" id="tanggal">
+    <input type="text" id="pair" placeholder="BTC/USDT">
 
-            <select id="type">
-                <option value="buy">BUY</option>
-                <option value="sell">SELL</option>
-            </select>
+    <select id="type">
+        <option value="buy">BUY</option>
+        <option value="sell">SELL</option>
+    </select>
 
-            <input type="number" id="entry" placeholder="Entry">
-            <input type="number" id="exit" placeholder="Exit">
-            <input type="number" id="lot" placeholder="Lot">
+    <input type="number" id="entry" placeholder="Entry">
+    <input type="number" id="exit" placeholder="Exit">
+    <input type="number" id="lot" placeholder="Lot">
 
-            <button onclick="tambahTrade()">+ Add Trade</button>
-        </div>
+    <!-- 💰 PROFIT MANUAL -->
+    <input type="number" id="profit" placeholder="Profit (isi manual)">
 
-        <!-- STATS -->
-        <div class="stats">
-            <div class="box">
-                <p>Total Profit</p>
-                <h2 id="totalProfit">0</h2>
-            </div>
-            <div class="box">
-                <p>Winrate</p>
-                <h2 id="winrate">0%</h2>
-            </div>
-        </div>
-
-        <!-- CHART -->
-        <div class="card">
-            <canvas id="chart"></canvas>
-        </div>
-
+    <!-- ⚡ QUICK PROFIT -->
+    <div style="margin-top:10px;">
+        <button type="button" onclick="setProfit(10)">+10</button>
+        <button type="button" onclick="setProfit(20)">+20</button>
+        <button type="button" onclick="setProfit(50)">+50</button>
+        <button type="button" onclick="setProfit(-10)">-10</button>
+        <button type="button" onclick="setProfit(-20)">-20</button>
+        <button type="button" onclick="setProfit(-50)">-50</button>
     </div>
 
+    <button onclick="tambahTrade()" style="margin-top:10px;">
+        + Add Trade
+    </button>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+    <div class="box">
+        <p>Total Profit</p>
+        <h2 id="totalProfit">0</h2>
+    </div>
+    <div class="box">
+        <p>Winrate</p>
+        <h2 id="winrate">0%</h2>
+    </div>
+</div>
+
+<!-- CHART -->
+<div class="card">
+    <canvas id="chart"></canvas>
+</div>
     <!-- HISTORY -->
     <div id="history" class="page" style="display:none;">
         <div class="card">
