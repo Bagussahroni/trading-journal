@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <h2>📈 Journal</h2>
     <p onclick="showPage('dashboard')">Dashboard</p>
@@ -17,87 +16,89 @@
 
 <div class="main">
 
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="page">
+<div id="dashboard" class="page">
 
-        <div class="topbar">
-            <h1>Trading Journal</h1>
-        </div>
+<div class="topbar">
+    <h1>Trading Journal</h1>
+</div>
 
-        <div class="card">
-            <input type="number" id="balance" placeholder="Balance">
-            <input type="date" id="tanggal">
-            <input type="text" id="pair" placeholder="BTC/USDT">
+<div class="card">
+    <input type="number" id="balance" placeholder="Balance">
+    <input type="date" id="tanggal">
+    <input type="text" id="pair" placeholder="BTC/USDT">
 
-            <!-- ENTRY & EXIT -->
-            <input type="number" id="entry" placeholder="Harga Entry">
-            <input type="number" id="exit" placeholder="Harga Exit">
+    <input type="number" id="entry" placeholder="Harga Entry">
+    <input type="number" id="exit" placeholder="Harga Exit">
 
-            <select id="type">
-                <option value="buy">BUY</option>
-                <option value="sell">SELL</option>
-            </select>
+    <select id="type">
+        <option value="buy">BUY</option>
+        <option value="sell">SELL</option>
+    </select>
 
-            <!-- LOT -->
-            <input type="number" id="lot" placeholder="Lot">
+    <input type="number" id="lot" placeholder="Lot">
 
-            <!-- PROFIT MANUAL (optional override) -->
-            <input type="number" id="profit" placeholder="Profit (Manual)">
+    <input type="number" id="profit" placeholder="Profit (Manual Optional)">
 
-            <button onclick="tambahTrade()">+ Add Trade</button>
-        </div>
+    <!-- CURRENCY -->
+    <select id="currency">
+        <option value="IDR">Rupiah (IDR)</option>
+        <option value="USD">Dollar (USD)</option>
+    </select>
 
-        <div class="stats">
-            <div class="box">
-                <p>Total Profit</p>
-                <h2 id="totalProfit">0</h2>
-            </div>
-            <div class="box">
-                <p>Winrate</p>
-                <h2 id="winrate">0%</h2>
-            </div>
-        </div>
+    <button onclick="tambahTrade()">+ Add Trade</button>
+</div>
 
-        <div class="card">
-            <canvas id="chart"></canvas>
-        </div>
-
+<div class="stats">
+    <div class="box">
+        <p>Total Profit</p>
+        <h2 id="totalProfit">0</h2>
     </div>
-
-    <!-- HISTORY -->
-    <div id="history" class="page" style="display:none;">
-        <div class="card">
-            <h2>📜 History Trading</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Pair</th>
-                        <th>Entry</th>
-                        <th>Exit</th>
-                        <th>Type</th>
-                        <th>Lot</th>
-                        <th>Profit</th>
-                        <th>Balance</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableData"></tbody>
-            </table>
-        </div>
+    <div class="box">
+        <p>Winrate</p>
+        <h2 id="winrate">0%</h2>
     </div>
+</div>
 
-    <!-- ANALYTICS -->
-    <div id="analytics" class="page" style="display:none;">
-        <div class="card">
-            <h2>📊 Analytics</h2>
-            <p>Total Trade: <span id="totalTrade">0</span></p>
-            <p>Win: <span id="winTrade">0</span></p>
-            <p>Loss: <span id="lossTrade">0</span></p>
-            <p>Best Profit: <span id="bestProfit">0</span></p>
-            <p>Worst Loss: <span id="worstLoss">0</span></p>
-        </div>
-    </div>
+<div class="card">
+    <canvas id="chart"></canvas>
+</div>
+
+</div>
+
+<!-- HISTORY -->
+<div id="history" class="page" style="display:none;">
+<div class="card">
+    <h2>📜 History Trading</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Pair</th>
+                <th>Entry</th>
+                <th>Exit</th>
+                <th>Type</th>
+                <th>Lot</th>
+                <th>Profit</th>
+                <th>Balance</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+</div>
+</div>
+
+<!-- ANALYTICS -->
+<div id="analytics" class="page" style="display:none;">
+<div class="card">
+    <h2>📊 Analytics</h2>
+    <p>Total Trade: <span id="totalTrade">0</span></p>
+    <p>Win: <span id="winTrade">0</span></p>
+    <p>Loss: <span id="lossTrade">0</span></p>
+    <p>Best Profit: <span id="bestProfit">0</span></p>
+    <p>Worst Loss: <span id="worstLoss">0</span></p>
+</div>
+</div>
 
 </div>
 
