@@ -4,6 +4,15 @@ let chart;
 
 document.getElementById("balance").value = balance;
 
+// FORMAT UANG
+function formatUang(angka, currency) {
+    if (currency === "IDR") {
+        return "Rp " + Number(angka).toLocaleString("id-ID");
+    } else {
+        return "$ " + Number(angka).toLocaleString("en-US");
+    }
+}
+
 // SAVE
 function saveData() {
     localStorage.setItem("trades", JSON.stringify(trades));
@@ -19,6 +28,7 @@ function tambahTrade() {
     let type = document.getElementById("type").value;
     let lot = parseFloat(document.getElementById("lot").value);
     let manualProfit = document.getElementById("profit").value;
+    let currency = document.getElementById("currency").value;
 
     balance = parseFloat(document.getElementById("balance").value) || 0;
 
@@ -27,7 +37,7 @@ function tambahTrade() {
         return;
     }
 
-    // AUTO PROFIT (kalau tidak isi manual)
+    // AUTO PROFIT
     let profit;
     if (manualProfit !== "" && manualProfit !== null) {
         profit = parseFloat(manualProfit);
@@ -45,7 +55,7 @@ function tambahTrade() {
         type,
         lot,
         profit,
-        balance: balance + profit
+        currency
     });
 
     saveData();
@@ -71,6 +81,8 @@ function render() {
     let worst = Infinity;
     let currentBalance = parseFloat(balance) || 0;
 
+    let currency = trades[0]?.currency || "USD";
+
     for (let i = 0; i < trades.length; i++) {
         let t = trades[i];
         let profit = t.profit;
@@ -94,8 +106,10 @@ function render() {
                 <td>${t.exit}</td>
                 <td>${t.type.toUpperCase()}</td>
                 <td>${t.lot}</td>
-                <td class="${profit >= 0 ? 'profit' : 'loss'}">${profit.toFixed(2)}</td>
-                <td>${currentBalance.toFixed(2)}</td>
+                <td class="${profit >= 0 ? 'profit' : 'loss'}">
+                    ${formatUang(profit, t.currency)}
+                </td>
+                <td>${formatUang(currentBalance, t.currency)}</td>
                 <td><button onclick="hapus(${i})">Hapus</button></td>
             </tr>
         `;
@@ -105,14 +119,20 @@ function render() {
 
     let winrate = trades.length ? ((win / trades.length) * 100).toFixed(1) : 0;
 
-    document.getElementById("totalProfit").innerText = totalProfit.toFixed(2);
+    document.getElementById("totalProfit").innerText =
+        formatUang(totalProfit, currency);
+
     document.getElementById("winrate").innerText = winrate + "%";
 
     document.getElementById("totalTrade").innerText = trades.length;
     document.getElementById("winTrade").innerText = win;
     document.getElementById("lossTrade").innerText = loss;
-    document.getElementById("bestProfit").innerText = best === -Infinity ? 0 : best;
-    document.getElementById("worstLoss").innerText = worst === Infinity ? 0 : worst;
+
+    document.getElementById("bestProfit").innerText =
+        best === -Infinity ? 0 : formatUang(best, currency);
+
+    document.getElementById("worstLoss").innerText =
+        worst === Infinity ? 0 : formatUang(worst, currency);
 
     renderChart();
 }
