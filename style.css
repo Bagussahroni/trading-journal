@@ -35,7 +35,7 @@ body::after {
     position: fixed;
     inset: 0;
 
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
     background: rgba(5, 8, 15, 0.2);
 
     pointer-events: none;
