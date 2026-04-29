@@ -19,14 +19,34 @@ body {
     color: #f9fafb;
 }
 
-/* MAROON DECOR (CORAK HALUS) */
+/* MAROON DECOR */
 body::before {
     content: "";
     position: fixed;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: radial-gradient(circle at bottom right, rgba(128, 0, 32, 0.25), transparent);
     pointer-events: none;
+    z-index: 0;
+}
+
+/* 🔥 BLUR DEPAN (FOREGROUND) */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    backdrop-filter: blur(6px);
+    background: rgba(5, 8, 15, 0.2);
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* SUPAYA UI DI ATAS */
+.sidebar,
+.main {
+    position: relative;
+    z-index: 1;
 }
 
 /* SIDEBAR */
