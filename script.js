@@ -4,6 +4,12 @@ let chart;
 
 document.getElementById("balance").value = balance;
 
+// ✅ AUTO SET TANGGAL HARI INI
+window.onload = function () {
+    let today = new Date().toISOString().split("T")[0];
+    document.getElementById("tanggal").value = today;
+};
+
 // FORMAT UANG
 function formatUang(angka, currency) {
     if (currency === "IDR") {
@@ -39,7 +45,7 @@ function tambahTrade() {
 
     // AUTO PROFIT
     let profit;
-    if (manualProfit !== "" && manualProfit !== null) {
+    if (manualProfit !== "") {
         profit = parseFloat(manualProfit);
     } else {
         profit = type === "buy"
